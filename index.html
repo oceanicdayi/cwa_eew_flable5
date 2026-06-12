@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>臺灣地震預警系統的演進與發展｜陳達毅 科長・中央氣象署地震測報中心</title>
+<meta name="description" content="嘉義縣政府115年度天然災害停止上班及上課通報作業講習 — 臺灣地震預警系統的演進與發展，互動式簡報網頁">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;900&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0B2545;          /* 海溝深藍 */
+  --paper:#F4F8FB;        /* 觀測紙白 */
+  --sea:#155E8A;          /* 氣象署藍 */
+  --cyan:#2D9CDB;
+  --alert:#E4572E;        /* 震度紅 */
+  --amber:#F4A259;        /* 震度橙 */
+  --green:#3FA36C;        /* 震度綠 */
+  --line:#C9D8E4;
+  --mono:'IBM Plex Mono',monospace;
+  --sans:'Noto Sans TC',sans-serif;
+  --serif:'Noto Serif TC',serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);line-height:1.7}
+img{max-width:100%;display:block}
+button{font-family:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+
+/* ---------- top bar ---------- */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(11,37,69,.94);backdrop-filter:blur(8px);color:#fff;display:flex;align-items:center;gap:14px;padding:10px 18px}
+.topbar .brand{font-weight:900;font-size:.95rem;letter-spacing:.05em;white-space:nowrap}
+.topbar .brand small{display:block;font-weight:400;font-size:.68rem;opacity:.75;letter-spacing:.12em}
+.topbar nav{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+.topbar nav a{color:#cfe3f2;text-decoration:none;font-size:.8rem;padding:5px 10px;border-radius:6px}
+.topbar nav a:hover{background:rgba(255,255,255,.12);color:#fff}
+#progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:60;background:linear-gradient(90deg,var(--green),#F7E733,var(--amber),var(--alert),#7B2D8B)}
+
+/* ---------- hero ---------- */
+.hero{background:linear-gradient(165deg,#0B2545 0%,#103A63 55%,#155E8A 100%);color:#fff;padding:120px 24px 70px;position:relative;overflow:hidden}
+.hero-inner{max-width:1060px;margin:0 auto;position:relative;z-index:2}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.18em;color:#8FD6FF;border:1px solid rgba(143,214,255,.4);display:inline-block;padding:4px 12px;border-radius:999px;margin-bottom:22px}
+.hero h1{font-family:var(--serif);font-weight:900;font-size:clamp(1.9rem,5vw,3.4rem);line-height:1.25;letter-spacing:.02em}
+.hero h1 .accent{color:#8FD6FF}
+.hero .speaker{margin-top:18px;font-size:1.02rem;color:#D9E9F5}
+.hero .speaker b{color:#fff}
+.hero-stats{display:flex;gap:14px;flex-wrap:wrap;margin-top:34px}
+.stat{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:14px 20px;min-width:150px}
+.stat .n{font-family:var(--mono);font-weight:600;font-size:1.7rem;color:#8FD6FF}
+.stat .n em{font-style:normal;color:var(--amber)}
+.stat .l{font-size:.78rem;color:#C5DCEE;margin-top:2px}
+.hero-cta{margin-top:36px;display:flex;gap:12px;flex-wrap:wrap}
+.btn{border:none;border-radius:10px;padding:13px 26px;font-size:.95rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{background:var(--alert);color:#fff}
+.btn-ghost{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.5)}
+#seismo{position:absolute;left:0;right:0;bottom:0;width:100%;height:160px;opacity:.55;z-index:1}
+
+/* ---------- layout ---------- */
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+section.block{padding:64px 0 8px}
+.sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:8px}
+.sec-head .tag{font-family:var(--mono);font-size:.75rem;letter-spacing:.15em;color:#fff;padding:3px 10px;border-radius:4px}
+.sec-head h2{font-family:var(--serif);font-weight:900;font-size:clamp(1.3rem,3vw,1.8rem)}
+.sec-head .range{font-family:var(--mono);font-size:.78rem;color:#5B7A93;margin-left:auto}
+.sec-desc{color:#3E5A72;font-size:.95rem;max-width:760px;margin-bottom:18px}
+
+/* ---------- viewer ---------- */
+.viewer{position:sticky;top:58px;z-index:30;background:var(--paper);padding:14px 0 10px;border-bottom:1px solid var(--line)}
+.stage{position:relative;max-width:1180px;margin:0 auto;padding:0 20px}
+.frame{position:relative;border-radius:14px;overflow:hidden;background:#0B2545;box-shadow:0 18px 50px rgba(11,37,69,.22);aspect-ratio:16/9}
+.frame img{width:100%;height:100%;object-fit:contain;user-select:none;-webkit-user-drag:none}
+.navbtn{position:absolute;top:50%;transform:translateY(-50%);width:46px;height:46px;border-radius:50%;border:none;background:rgba(11,37,69,.55);color:#fff;font-size:1.3rem;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.navbtn:hover{background:var(--alert)}
+.navbtn.prev{left:30px}.navbtn.next{right:30px}
+.viewer-bar{max-width:1180px;margin:10px auto 0;padding:0 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.counter{font-family:var(--mono);font-size:.85rem;background:var(--ink);color:#8FD6FF;padding:4px 12px;border-radius:6px}
+.slide-title{font-weight:700;font-size:.95rem;flex:1;min-width:200px}
+.slide-sec{font-size:.72rem;color:#fff;padding:3px 9px;border-radius:4px;white-space:nowrap}
+.tools{display:flex;gap:8px}
+.tool{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 13px;font-size:.8rem;font-weight:500;color:var(--ink)}
+.tool:hover{border-color:var(--cyan);color:var(--sea)}
+.bar-track{height:5px;background:#DCE7F0;border-radius:99px;overflow:hidden;flex-basis:100%;}
+.bar-fill{height:100%;width:2%;background:linear-gradient(90deg,var(--green),#F7E733,var(--amber),var(--alert));transition:width .25s}
+
+/* ---------- thumbnails per section ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:16px;margin:10px 0 30px}
+.thumb{border:none;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 3px 12px rgba(11,37,69,.10);text-align:left;transition:transform .15s,box-shadow .15s;padding:0}
+.thumb:hover{transform:translateY(-4px);box-shadow:0 10px 26px rgba(11,37,69,.18)}
+.thumb img{aspect-ratio:16/9;object-fit:cover;width:100%}
+.thumb .cap{padding:9px 12px 11px;font-size:.8rem;font-weight:500;display:flex;gap:8px;align-items:baseline}
+.thumb .cap .no{font-family:var(--mono);font-size:.7rem;color:#7691A8;flex-shrink:0}
+.thumb.active{outline:3px solid var(--alert)}
+
+/* ---------- key facts ---------- */
+.facts{background:#fff;border-top:1px solid var(--line);margin-top:60px;padding:64px 0}
+.facts h2{font-family:var(--serif);font-weight:900;font-size:1.6rem;margin-bottom:8px}
+.facts p.lead{color:#3E5A72;margin-bottom:26px;max-width:740px}
+.fact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.card{border:1px solid var(--line);border-left:5px solid var(--sea);border-radius:10px;padding:18px 20px;background:#FBFDFF}
+.card.alert{border-left-color:var(--alert)}
+.card.amber{border-left-color:var(--amber)}
+.card.green{border-left-color:var(--green)}
+.card h3{font-size:.98rem;margin-bottom:6px}
+.card p{font-size:.85rem;color:#41607A}
+.card .big{font-family:var(--mono);font-weight:600;font-size:1.5rem;color:var(--ink);display:block;margin-bottom:4px}
+.card .big em{font-style:normal;color:var(--alert)}
+
+/* ---------- 3 steps ---------- */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:24px}
+.step{background:var(--ink);color:#fff;border-radius:12px;padding:22px;position:relative;overflow:hidden}
+.step .en{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;color:#8FD6FF}
+.step h3{font-family:var(--serif);font-size:1.5rem;margin:6px 0 8px}
+.step p{font-size:.84rem;color:#C5DCEE}
+.step::after{content:attr(data-n);position:absolute;right:10px;bottom:-18px;font-family:var(--mono);font-size:5rem;font-weight:600;color:rgba(255,255,255,.07)}
+
+/* ---------- footer ---------- */
+footer{background:var(--ink);color:#9FB8CC;padding:44px 20px;margin-top:70px;font-size:.83rem}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+footer b{color:#fff}
+footer a{color:#8FD6FF}
+
+/* ---------- lightbox ---------- */
+.lightbox{position:fixed;inset:0;background:rgba(5,16,30,.96);z-index:100;display:none;flex-direction:column}
+.lightbox.open{display:flex}
+.lb-top{display:flex;align-items:center;gap:12px;color:#fff;padding:12px 18px}
+.lb-top .counter{background:rgba(255,255,255,.12)}
+.lb-close{margin-left:auto;background:none;border:1.5px solid rgba(255,255,255,.4);color:#fff;border-radius:8px;padding:7px 16px;font-size:.85rem}
+.lb-close:hover{background:var(--alert);border-color:var(--alert)}
+.lb-stage{flex:1;display:flex;align-items:center;justify-content:center;position:relative;padding:0 70px 20px}
+.lb-stage img{max-width:100%;max-height:100%;object-fit:contain;border-radius:6px}
+@media(max-width:760px){
+  .topbar nav{display:none}
+  .navbtn.prev{left:8px}.navbtn.next{right:8px}
+  .lb-stage{padding:0 8px 12px}
+  .viewer{position:static}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<header class="topbar">
+  <div class="brand">臺灣地震預警系統的演進與發展<small>中央氣象署 地震測報中心｜嘉義縣政府 115 年度講習</small></div>
+  <nav>
+    <a href="#viewer">簡報瀏覽</a>
+    <a href="#sec-1">地震環境</a>
+    <a href="#sec-3">強震即時警報</a>
+    <a href="#sec-4">科技極限</a>
+    <a href="#sec-6">AI 演算</a>
+    <a href="#facts">重點整理</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <canvas id="seismo" aria-hidden="true"></canvas>
+  <div class="hero-inner">
+    <span class="eyebrow">嘉義縣政府 115 年度 天然災害停止上班及上課通報作業講習</span>
+    <h1>臺灣地震預警系統的<br><span class="accent">演進</span>與<span class="accent">發展</span></h1>
+    <p class="speaker"><b>陳達毅 科長</b>｜中央氣象署 地震測報中心　·　2026 年 6 月 12 日</p>
+    <div class="hero-stats">
+      <div class="stat"><span class="n">102<em>→</em>7<span style="font-size:.9rem"> 秒</span></span><div class="l">警報發布時效（30 年演進）</div></div>
+      <div class="stat"><span class="n">-51%</span><div class="l">預警盲區面積（35→25 km）</div></div>
+      <div class="stat"><span class="n">~3000</span><div class="l">即時觀測頻道（100Hz）</div></div>
+      <div class="stat"><span class="n">4500<span style="font-size:.9rem">+</span></span><div class="l">地震速報直送單位</div></div>
+    </div>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#viewer">▶ 開始瀏覽簡報（50 頁）</a>
+      <a class="btn btn-ghost" href="#facts">看 3 分鐘重點</a>
+    </div>
+  </div>
+</section>
+
+<!-- ====== sticky viewer ====== -->
+<div class="viewer" id="viewer">
+  <div class="stage">
+    <div class="frame" id="frame">
+      <img id="slideImg" src="slides/slide-01.webp" alt="投影片 1：臺灣地震預警系統的演進與發展（封面）">
+      <button class="navbtn prev" id="btnPrev" aria-label="上一頁">‹</button>
+      <button class="navbtn next" id="btnNext" aria-label="下一頁">›</button>
+    </div>
+  </div>
+  <div class="viewer-bar">
+    <span class="counter" id="counter">01 / 50</span>
+    <span class="slide-sec" id="slideSec">開場</span>
+    <span class="slide-title" id="slideTitle">封面｜臺灣地震預警系統的演進與發展</span>
+    <div class="tools">
+      <button class="tool" id="btnPlay">▶ 自動播放</button>
+      <button class="tool" id="btnFull">⛶ 全螢幕檢視</button>
+    </div>
+    <div class="bar-track"><div class="bar-fill" id="barFill"></div></div>
+  </div>
+</div>
+
+<main class="wrap" id="toc"></main>
+
+<!-- ====== key facts ====== -->
+<section class="facts" id="facts">
+  <div class="wrap">
+    <h2>3 分鐘重點整理</h2>
+    <p class="lead">給沒時間看完 50 頁的你 — 本場講習最重要的觀念與數字。</p>
+    <div class="fact-grid">
+      <div class="card"><span class="big">P 波 → S 波</span><h3>預警原理：與地震波賽跑</h3><p>P 波（縱波）速度快、震幅小；S 波（橫波）慢但具破壞力。利用 P 波前 3 秒資訊推估規模並快速發送警報，可在災害性震波抵達前爭取應變時間。</p></div>
+      <div class="card alert"><span class="big">102 <em>→</em> 7 秒</span><h3>30 年演進成果</h3><p>歷經測站布建、演算法革新與加密觀測，警報發布時效自 1994 年的震後 102 秒壓縮至今日 7 秒；盲區半徑由 35 公里縮至 25 公里，面積減少逾 51%。</p></div>
+      <div class="card amber"><span class="big">M5.0＋震度4級</span><h3>國家級警報發布條件</h3><p>預估規模達 5.0 且預估震度達 4 級發布國家級警報（細胞廣播）；電視臺插播為規模 5.0＋震度 3 級；網路推播為規模 4.5＋震度 3 級。</p></div>
+      <div class="card green"><span class="big">趴下・掩護・穩住</span><h3>收到警報怎麼辦</h3><p>DROP! COVER! HOLD ON! 就近避難，躲在堅固桌下或建築物中央牆邊，保護頭部、勿慌張往室外跑、勿靠近窗戶以防玻璃震破。</p></div>
+      <div class="card"><span class="big">每 30~40 年</span><h3>臺灣的地震風險</h3><p>板塊每年以 7~8 公分聚合：每天約 100 個地震、每年約 100 個顯著有感地震、每 30~40 年 1 個大規模災害性地震。1900 年以來已有 7 次罹難百人以上災害地震。</p></div>
+      <div class="card alert"><span class="big">深震・誤報・漏報</span><h3>科技仍有極限</h3><p>深層地震（如 114/12/27 M7.0 深度 67.7km）預警時效受限；短時間連續地震可能造成誤報（111/9/18）或漏報（112/9/15 相差僅 4 秒的兩起地震）。警報不可能 100% 完美，平時整備更重要。</p></div>
+      <div class="card amber"><span class="big">6 區・4 級</span><h3>海嘯警報作業</h3><p>臺灣劃分 6 個海嘯警戒分區，預估波高分為 4 級（0.3 公尺以下至 6 公尺）。海嘯警報、警訊不管哪一種：往高處、往內陸、找堅固、抓牢固，等解除再返回沿海。</p></div>
+      <div class="card green"><span class="big">AI 現地型預警</span><h3>下一階段發展</h3><p>以機器學習模型用 3 秒 P 波預估震度、爭取約 15 秒預警時間；逐秒觀測震度輔助研判；預警發布由縣市級走向鄉鎮級小區域精準警報，並持續公私協力多管道傳遞。</p></div>
+    </div>
+    <div class="steps">
+      <div class="step" data-n="1"><span class="en">DROP!</span><h3>趴下</h3><p>地震來時立刻放低重心，避免被搖晃甩倒。</p></div>
+      <div class="step" data-n="2"><span class="en">COVER!</span><h3>掩護</h3><p>躲進堅固桌下，以墊子或手保護頭頸。</p></div>
+      <div class="step" data-n="3"><span class="en">HOLD ON!</span><h3>穩住</h3><p>抓緊桌腳穩住身體，直到搖晃完全停止。</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div><b>臺灣地震預警系統的演進與發展</b><br>陳達毅 科長｜中央氣象署 地震測報中心<br>嘉義縣政府 115 年度天然災害停止上班及上課通報作業講習</div>
+    <div>簡報內容版權屬原作者與中央氣象署所有<br>互動網頁僅供講習瀏覽使用｜<a href="https://www.cwa.gov.tw" target="_blank" rel="noopener">中央氣象署官網</a></div>
+  </div>
+</footer>
+
+<!-- lightbox -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="全螢幕投影片檢視">
+  <div class="lb-top">
+    <span class="counter" id="lbCounter">01 / 50</span>
+    <span id="lbTitle" style="font-size:.9rem"></span>
+    <button class="lb-close" id="lbClose">✕ 關閉 (Esc)</button>
+  </div>
+  <div class="lb-stage">
+    <img id="lbImg" src="slides/slide-01.webp" alt="">
+    <button class="navbtn prev" id="lbPrev" aria-label="上一頁">‹</button>
+    <button class="navbtn next" id="lbNext" aria-label="下一頁">›</button>
+  </div>
+</div>
+
+<script>
+/* ---------------- data ---------------- */
+const SECTIONS=[
+ {name:"開場",color:"#155E8A",desc:"講者介紹與地震中心工作面臨的挑戰 — 深夜強震 23:50 火速開記者會。",range:[1,2]},
+ {name:"競速開始",color:"#2D9CDB",desc:"從 1999 集集地震到 2024 花蓮地震 — 與地震波賽跑的起點，逐秒觀測震度如何輔助預警。",range:[3,5]},
+ {name:"臺灣的地震環境與風險",color:"#E4572E",desc:"板塊每年聚合 7~8 公分；每天 100 個地震、每 30~40 年一次大規模災害地震。1900 年以來 7 次百人罹難地震，以及近年嘉南地區的甲仙、美濃、大埔地震。",range:[6,13]},
+ {name:"地震測報中心與觀測網",color:"#155E8A",desc:"約 60 人、24 小時全年無休的作業環境；約 3000 個觀測頻道、100Hz 取樣的即時地震觀測網。",range:[14,17]},
+ {name:"強震即時警報",color:"#F4A259",desc:"P 波推估、S 波抵達前示警的原理；國家級警報／電視插播／網路推播的發布條件與管道；2024.4.3 花蓮地震實例；30 年來警報時效 102 秒 → 7 秒。",range:[18,23]},
+ {name:"科技極限與複合型災害",color:"#C0392B",desc:"深震、誤報、漏報的真實案例，以及海嘯威脅：警戒分區、波高分級、2024 花蓮與 2025 堪察加 M8.8 海嘯警報實例。",range:[24,35]},
+ {name:"掌握關鍵應變與整備",color:"#3FA36C",desc:"最後一哩路：多元發布管道、直送 4500+ 防救災單位，以及防震 3 步驟（趴下、掩護、穩住）等防災教育宣導。",range:[36,41]},
+ {name:"常見 Q&A 與 AI 演算邏輯",color:"#7B2D8B",desc:"民間 APP 比較快？機器學習模型如何用 3 秒 P 波預估震度、爭取 15 秒預警時間，以及逐秒觀測震度的 AI 研判。",range:[42,47]},
+ {name:"結語",color:"#0B2545",desc:"AI 現地型預警、鄉鎮級精準警報的未來展望，以及持續加強的公私協力合作。",range:[48,50]}
+];
+const TITLES=[
+"封面｜臺灣地震預警系統的演進與發展",
+"在地震中心工作面臨的挑戰",
+"競速開始 — 1999 集集地震 vs 2024 花蓮地震",
+"競速開始 — 2024.4.3 花蓮地震即時 PGA 與震度",
+"即時逐秒觀測震度輔助地震預警系統",
+"臺灣的地震環境與風險 — 板塊構造",
+"地震環境 — GNSS 絕對水平速度場",
+"1900 年以來 7 次大規模災害地震",
+"地震活動時序分析（1994~2026）",
+"過去 10 年災害地震回顧",
+"嘉南災害地震 — 2010 M6.3 甲仙地震",
+"嘉南災害地震 — 2016 M6.6 美濃地震",
+"嘉南災害地震 — 2025 M6.4 大埔地震",
+"地震測報中心工作環境",
+"地震測報中心 — 24 小時值班席",
+"地震監測畫面",
+"即時地震觀測網 — 巨量資料",
+"強震即時警報原理（P 波與 S 波）",
+"強震即時警報發布條件與管道",
+"2024.4.3 花蓮地震 — 地震報告",
+"2024.4.3 花蓮地震 — 國家級警報",
+"2024.4.3 花蓮地震 — 網路推播與電視臺推播",
+"與地震波賽跑 — 警報時效 102 秒縮短至 7 秒",
+"科技極限 — 深震（114/12/27 M7.0 實例）",
+"科技極限 — 誤報（111/9/18 雲嘉南）",
+"誤報案例 — CWB 地震報告分析",
+"誤報成因 — 短時間內兩起地震",
+"漏報成因 — 兩地震僅相差 4 秒",
+"漏報案例 — 三站波形紀錄",
+"複合型災害 — 海嘯的形成條件",
+"臺灣海嘯威脅 — 三大海溝",
+"海嘯警戒分區劃分與預估波高分級",
+"海嘯警報範例 — 報文解讀",
+"海嘯警報實例 — 2024.4.3 花蓮地震",
+"海嘯警報實例 — 2025 堪察加 M8.8 地震",
+"最後一哩路 — 多元發布管道",
+"直送防救災需求單位（4500+ 單位）",
+"防救災單位與媒體之應變與整備",
+"防災教育宣導 — 防震 3 步驟",
+"防災教育宣導 — 國家防災日演練",
+"防災教育宣導 — 海嘯預警有幾種",
+"常見 Q&A — 民間業者 APP 比較快收到警報？",
+"地震預警系統演算邏輯 — 機器學習模型",
+"AI 模型 — 3 秒 P 波爭取 15 秒預警時間",
+"機器學習預估震度 — 實際案例",
+"逐秒觀測震度 — 2024.4.3 花蓮地震",
+"AI 也可以精進地震預警嗎？",
+"結語 — AI 現地型預警與發布精緻化",
+"結語 — 持續加強公私協力合作",
+"謝謝聆聽，敬請指教"
+];
+const N=50;
+const pad=n=>String(n).padStart(2,"0");
+const src=n=>`slides/slide-${pad(n)}.webp`;
+const thsrc=n=>`slides/slide-${pad(n)}-th.webp`;
+const secOf=n=>SECTIONS.find(s=>n>=s.range[0]&&n<=s.range[1]);
+
+/* ---------------- build TOC ---------------- */
+const toc=document.getElementById("toc");
+SECTIONS.forEach((s,i)=>{
+  const sec=document.createElement("section");
+  sec.className="block";sec.id="sec-"+i;
+  let thumbs="";
+  for(let n=s.range[0];n<=s.range[1];n++){
+    thumbs+=`<button class="thumb" data-n="${n}" aria-label="跳至投影片 ${n}">
+      <img loading="lazy" src="${thsrc(n)}" alt="投影片 ${n} 縮圖：${TITLES[n-1]}">
+      <span class="cap"><span class="no">P${pad(n)}</span>${TITLES[n-1]}</span></button>`;
+  }
+  sec.innerHTML=`<div class="sec-head">
+      <span class="tag" style="background:${s.color}">CH ${i+1}</span>
+      <h2>${s.name}</h2><span class="range">P${pad(s.range[0])}–P${pad(s.range[1])}</span></div>
+    <p class="sec-desc">${s.desc}</p><div class="grid">${thumbs}</div>`;
+  toc.appendChild(sec);
+});
+
+/* ---------------- viewer state ---------------- */
+let cur=1,playing=false,timer=null;
+const img=document.getElementById("slideImg"),counter=document.getElementById("counter"),
+ sTitle=document.getElementById("slideTitle"),sSec=document.getElementById("slideSec"),
+ barFill=document.getElementById("barFill"),
+ lb=document.getElementById("lightbox"),lbImg=document.getElementById("lbImg"),
+ lbCounter=document.getElementById("lbCounter"),lbTitle=document.getElementById("lbTitle");
+
+function render(){
+  img.src=src(cur);
+  img.alt=`投影片 ${cur}：${TITLES[cur-1]}`;
+  counter.textContent=`${pad(cur)} / ${N}`;
+  sTitle.textContent=TITLES[cur-1];
+  const s=secOf(cur);
+  sSec.textContent=s.name;sSec.style.background=s.color;
+  barFill.style.width=(cur/N*100)+"%";
+  document.querySelectorAll(".thumb").forEach(t=>t.classList.toggle("active",+t.dataset.n===cur));
+  if(lb.classList.contains("open")){
+    lbImg.src=src(cur);lbImg.alt=img.alt;
+    lbCounter.textContent=counter.textContent;lbTitle.textContent=TITLES[cur-1];
+  }
+  // preload neighbours
+  [cur+1,cur-1].forEach(n=>{if(n>=1&&n<=N){const p=new Image();p.src=src(n);}});
+}
+function go(n,scroll){
+  cur=Math.min(N,Math.max(1,n));render();
+  if(scroll)document.getElementById("viewer").scrollIntoView({behavior:"smooth"});
+}
+document.getElementById("btnPrev").onclick=()=>go(cur-1);
+document.getElementById("btnNext").onclick=()=>go(cur+1);
+document.getElementById("frame").addEventListener("click",e=>{
+  if(e.target.tagName==="IMG"){openLB();}
+});
+document.querySelectorAll(".thumb").forEach(t=>t.onclick=()=>go(+t.dataset.n,true));
+
+/* autoplay */
+const btnPlay=document.getElementById("btnPlay");
+btnPlay.onclick=()=>{
+  playing=!playing;
+  btnPlay.textContent=playing?"⏸ 暫停播放":"▶ 自動播放";
+  if(playing){timer=setInterval(()=>{cur<N?go(cur+1):stopPlay();},4000);}
+  else stopPlay();
+};
+function stopPlay(){playing=false;btnPlay.textContent="▶ 自動播放";clearInterval(timer);}
+
+/* lightbox */
+function openLB(){lb.classList.add("open");document.body.style.overflow="hidden";render();}
+function closeLB(){lb.classList.remove("open");document.body.style.overflow="";}
+document.getElementById("btnFull").onclick=openLB;
+document.getElementById("lbClose").onclick=closeLB;
+document.getElementById("lbPrev").onclick=()=>go(cur-1);
+document.getElementById("lbNext").onclick=()=>go(cur+1);
+lb.addEventListener("click",e=>{if(e.target===lb||e.target.classList.contains("lb-stage"))closeLB();});
+
+/* keyboard */
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight"||e.key==="PageDown"){go(cur+1);e.preventDefault();}
+  else if(e.key==="ArrowLeft"||e.key==="PageUp"){go(cur-1);e.preventDefault();}
+  else if(e.key==="Escape")closeLB();
+  else if(e.key==="f"||e.key==="F")openLB();
+});
+
+/* touch swipe */
+let tx=null;
+[document.getElementById("frame"),document.querySelector(".lb-stage")].forEach(el=>{
+  el.addEventListener("touchstart",e=>tx=e.touches[0].clientX,{passive:true});
+  el.addEventListener("touchend",e=>{
+    if(tx===null)return;
+    const dx=e.changedTouches[0].clientX-tx;
+    if(Math.abs(dx)>45)go(cur+(dx<0?1:-1));
+    tx=null;},{passive:true});
+});
+
+/* scroll progress */
+const prog=document.getElementById("progress");
+addEventListener("scroll",()=>{
+  const h=document.documentElement;
+  prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+"%";
+},{passive:true});
+
+/* ---------------- hero seismogram ---------------- */
+const cv=document.getElementById("seismo"),ctx=cv.getContext("2d");
+let W,H,t=0;
+function resize(){W=cv.width=cv.offsetWidth;H=cv.height=cv.offsetHeight;}
+resize();addEventListener("resize",resize);
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function wave(x,phase){
+  // quiet -> P wave -> S wave pattern repeating
+  const cycle=((x*0.9+phase)%900+900)%900;
+  let a=2;
+  if(cycle>240&&cycle<420)a=12*Math.sin((cycle-240)/180*Math.PI);          // P
+  else if(cycle>460&&cycle<820)a=46*Math.sin((cycle-460)/360*Math.PI);     // S
+  return Math.sin(x*0.22+phase*0.05)*a+Math.sin(x*0.61+phase*0.11)*a*0.4;
+}
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  ctx.lineWidth=1.6;
+  for(let k=0;k<2;k++){
+    ctx.beginPath();
+    ctx.strokeStyle=k? "rgba(228,87,46,.8)":"rgba(143,214,255,.9)";
+    const base=H*(k?0.72:0.42);
+    for(let x=0;x<=W;x+=2){
+      const y=base+wave(x,t+k*420)*(k?0.6:1);
+      x===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+  }
+  t+=reduce?0:3;
+  if(!reduce)requestAnimationFrame(draw);
+}
+draw();
+
+render();
+</script>
+</body>
+</html>
